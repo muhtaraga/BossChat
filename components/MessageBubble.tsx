@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { MessageDTO } from "@/types";
 import { displayName, formatFileSize, formatTime, isVideoFile } from "@/lib/format";
 import { senderColor } from "@/lib/avatarColor";
@@ -36,6 +36,9 @@ export default function MessageBubble({
   const deleted = message.deletedAt !== null;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [clamped, setClamped] = useState(false);
+  const textRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -45,6 +48,12 @@ export default function MessageBubble({
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
   }, [menuOpen]);
+
+  useLayoutEffect(() => {
+    const el = textRef.current;
+    if (!el || expanded) return;
+    setClamped(el.scrollHeight > el.clientHeight + 1);
+  }, [message.content, expanded]);
 
   return (
     <div className={`group flex ${isOwn ? "justify-end" : "justify-start"}`}>
@@ -181,9 +190,30 @@ export default function MessageBubble({
             )}
 
             {message.content && (
-              <p className="text-[14.5px] leading-relaxed break-words whitespace-pre-wrap">
-                {message.content}
-              </p>
+              <>
+                <p
+                  ref={textRef}
+                  className="text-[14.5px] leading-relaxed break-words whitespace-pre-wrap"
+                  style={{
+                    // leading-relaxed = 1.625 satır yüksekliği; 5 satır = 8.125em.
+                    // -webkit-line-clamp, whitespace-pre-wrap ile çalışmadığından
+                    // max-height ile kısıtlıyoruz (satır sınırında temiz kesim).
+                    maxHeight: expanded ? undefined : "8.125em",
+                    overflow: expanded ? undefined : "hidden",
+                  }}
+                >
+                  {message.content}
+                </p>
+                {clamped && (
+                  <button
+                    onClick={() => setExpanded((v) => !v)}
+                    className="mt-0.5 text-[12.5px] font-semibold"
+                    style={{ color: "var(--accent)" }}
+                  >
+                    {expanded ? "Daha az göster" : "Devamını oku"}
+                  </button>
+                )}
+              </>
             )}
           </>
         )}

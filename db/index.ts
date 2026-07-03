@@ -42,7 +42,9 @@ function createDb(): ActiveDb {
   // Aynı süreçte iki modül grafiği (Next runtime + custom server) bağlanabildiği
   // için WAL + busy_timeout ile eşzamanlı yazmaları toleranslı hale getir.
   void client
-    .executeMultiple("PRAGMA journal_mode = WAL; PRAGMA busy_timeout = 5000;")
+    .executeMultiple(
+      "PRAGMA journal_mode = WAL; PRAGMA busy_timeout = 5000; PRAGMA foreign_keys = ON;",
+    )
     .catch(() => {});
   return drizzleLibsql(client, { schema }) as unknown as ActiveDb;
 }

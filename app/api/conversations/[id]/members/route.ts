@@ -3,6 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { conversations, conversationMembers, users } from "@/db/schema";
 import { getSessionUserId } from "@/lib/auth";
+import { areBlocked } from "@/lib/blocks";
 import { getConversationForUser, getMembership } from "@/lib/conversations";
 import { convRoom, getIO, userRoom } from "@/lib/io";
 
@@ -38,6 +39,9 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
   if (!target) return NextResponse.json({ error: "Kullanıcı bulunamadı." }, { status: 404 });
   if (await getMembership(conversationId, targetId)) {
     return NextResponse.json({ error: "Kullanıcı zaten üye." }, { status: 400 });
+  }
+  if (await areBlocked(userId, targetId)) {
+    return NextResponse.json({ error: "Bu kullanıcı gruba eklenemez." }, { status: 403 });
   }
 
   await db.insert(conversationMembers).values({ conversationId, userId: targetId });

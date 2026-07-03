@@ -267,7 +267,7 @@ export default function ChatWindow({
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex-1 overflow-y-auto overflow-x-hidden px-6"
+          className="flex-1 overflow-y-auto overflow-x-hidden px-4"
           style={{ paddingBlock: "var(--msg-py)", background: "var(--wallpaper)" }}
         >
           {loadingOlder && (
@@ -288,7 +288,7 @@ export default function ChatWindow({
           )}
           <div
             ref={contentRef}
-            className="mx-auto flex max-w-[820px] flex-col"
+            className="mx-auto flex max-w-[1100px] flex-col"
             style={{ gap: "var(--msg-gap)", zoom: "var(--font-scale)" }}
           >
             {rows.map((row) =>

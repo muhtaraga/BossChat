@@ -248,6 +248,9 @@ export function setupSocket(io: TypedServer) {
         if (!msg || msg.senderId !== userId || msg.deletedAt) {
           return ack({ ok: false, error: "Mesaj düzenlenemez." });
         }
+        if (!(await getMembership(msg.conversationId, userId))) {
+          return ack({ ok: false, error: "Mesaj düzenlenemez." });
+        }
         if (msg.type !== "text") {
           return ack({ ok: false, error: "Sadece metin mesajları düzenlenebilir." });
         }
@@ -277,6 +280,9 @@ export function setupSocket(io: TypedServer) {
       try {
         const [msg] = await db.select().from(messages).where(eq(messages.id, messageId)).limit(1);
         if (!msg || msg.senderId !== userId) {
+          return ack({ ok: false, error: "Mesaj silinemez." });
+        }
+        if (!(await getMembership(msg.conversationId, userId))) {
           return ack({ ok: false, error: "Mesaj silinemez." });
         }
         if (msg.deletedAt) {

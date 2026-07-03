@@ -45,7 +45,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Kod hatalı." }, { status: 400 });
   }
 
-  await db.update(otpCodes).set({ consumedAt: new Date() }).where(eq(otpCodes.id, otp.id));
+  // Tüketimi consumedAt IS NULL şartıyla yap: eşzamanlı iki istek aynı kodu
+  // doğru bilse bile yalnızca biri satırı güncelleyebilir (tek kullanımlık kod).
+  const consumed = await db
+    .update(otpCodes)
+    .set({ consumedAt: new Date() })
+    .where(and(eq(otpCodes.id, otp.id), isNull(otpCodes.consumedAt)))
+    .returning({ id: otpCodes.id });
+  if (consumed.length === 0) {
+    return NextResponse.json({ error: "Kod zaten kullanılmış." }, { status: 400 });
+  }
 
   let [user] = await db.select().from(users).where(eq(users.phone, phone)).limit(1);
   const isNewUser = !user;
