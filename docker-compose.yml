@@ -1,0 +1,28 @@
+# BossChat için PostgreSQL — yerel geliştirme.
+# Başlat:  docker compose up -d
+# Durdur:  docker compose down            (veri korunur, volume kalır)
+# Sıfırla: docker compose down -v         (volume dahil her şeyi siler)
+#
+# .env: DATABASE_URL=postgres://bosschat:bosschat@localhost:5433/bosschat
+# (Host portu 5433'tür; 5432 doluysa çakışmayı önlemek için.)
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bosschat-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bosschat
+      POSTGRES_PASSWORD: bosschat
+      POSTGRES_DB: bosschat
+    ports:
+      - "5433:5432"
+    volumes:
+      - bosschat_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bosschat"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  bosschat_pgdata:

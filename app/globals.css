@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #f9e7df;
+  --color-brand-100: #f3d6c8;
+  --color-brand-500: #e07a5f;
+  --color-brand-600: #cf6a50;
+  --color-brand-700: #b85a42;
+}
+
+:root {
+  --bg: #f4efe8;
+  --panel: #fffdf9;
+  --panel2: #efe8dd;
+  --border: #ece4d8;
+  --text: #2c2723;
+  --muted: #9b9186;
+  --bubble-other: #ffffff;
+  --file-bg: rgba(140, 130, 115, 0.1);
+  --shadow: 0 6px 24px rgba(60, 45, 30, 0.06);
+  --accent: #e07a5f;
+  --accent-soft: #f9e7df;
+  --accent-glow: rgba(224, 122, 95, 0.4);
+}
+
+html[data-theme="dark"] {
+  --bg: #161310;
+  --panel: #211d19;
+  --panel2: #2b2620;
+  --border: #332d26;
+  --text: #ece5db;
+  --muted: #948a7d;
+  --bubble-other: #2b2620;
+  --file-bg: rgba(255, 255, 255, 0.06);
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --accent-soft: #3d2a23;
+
+  --color-brand-50: #3d2a23;
+  --color-brand-100: #4a3229;
+  --color-brand-600: #ef9179;
+  --color-brand-700: #f3a88f;
+}
+
+/* Görünüm ayarları — yazı boyutu (zoom çarpanı), yoğunluk ve duvar kağıdı */
+:root {
+  --font-scale: 1;
+  --msg-gap: 0.25rem;
+  --msg-py: 1.25rem;
+  --wallpaper: transparent;
+}
+
+html[data-density="compact"] {
+  --msg-gap: 0.05rem;
+  --msg-py: 0.6rem;
+}
+
+html[data-wallpaper="plain"] {
+  --wallpaper: transparent;
+}
+html[data-wallpaper="default"] {
+  --wallpaper: radial-gradient(rgba(140, 130, 115, 0.11) 1px, transparent 1px) 0 0 / 18px 18px;
+}
+html[data-wallpaper="grid"] {
+  --wallpaper:
+    linear-gradient(rgba(140, 130, 115, 0.08) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, rgba(140, 130, 115, 0.08) 1px, transparent 1px) 0 0 / 22px 22px;
+}
+html[data-wallpaper="sunset"] {
+  --wallpaper: linear-gradient(160deg, rgba(224, 122, 95, 0.1), rgba(224, 122, 95, 0) 55%);
+}
+html[data-wallpaper="mint"] {
+  --wallpaper: linear-gradient(160deg, rgba(58, 160, 106, 0.1), rgba(58, 160, 106, 0) 55%);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+}
+
+@keyframes bcDot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* İnce kaydırma çubukları */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 130, 115, 0.35) transparent;
+}
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 130, 115, 0.35);
+  border-radius: 8px;
+}
